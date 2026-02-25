@@ -1,0 +1,21 @@
+#pragma once
+
+namespace scamera {
+
+enum class WorkMode { PURE_PREVIEW = 0, ANALYSIS = 1, PHOTO = 2, VIDEO = 3 };
+enum class CameraState { IDLE, INITIALIZING, PREVIEWING, CAPTURING, RECORDING, RELEASING };
+enum class ErrorCode {
+    NONE,
+    PERMISSION,
+    DEVICE_UNAVAILABLE,
+    SESSION_CONFIG_FAILED,
+    RENDER_INIT_FAILED,
+    RENDER_SURFACE_LOST,
+    ENCODER_INIT_FAILED,
+    ENCODER_BACKPRESSURE,
+    FILE_IO_FAILED,
+    THERMAL_THROTTLE,
+    INVALID_STATE
+};
+
+} // namespace scamera
