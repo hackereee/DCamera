@@ -1,0 +1,35 @@
+# CMake 构建输出
+build/
+cmake-build-*/
+
+# Android Gradle
+android/.gradle/
+android/**/build/
+android/local.properties
+android/.idea/
+android/**/*.iml
+
+# iOS / Xcode
+ios/**/build/
+ios/**/*.xcworkspace/xcuserdata/
+ios/**/*.xcodeproj/xcuserdata/
+ios/**/DerivedData/
+ios/**/*.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+
+# Swift Package Manager
+.swiftpm/
+Package.resolved
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code 本地配置
+.claude/
