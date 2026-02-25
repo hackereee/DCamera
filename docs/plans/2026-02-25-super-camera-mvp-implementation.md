@@ -1,48 +1,48 @@
-# Super Camera MVP Implementation Plan
+# 超级相机 MVP 实施计划
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Build a production-ready V1 native camera library for Android and iOS with bgfx-based preview in pure preview, analysis preview, and recording preview modes; include photo capture, video recording, and a basic reusable UI kit.
+**目标：** 构建可落地的 V1 原生相机库：Android/iOS 双端原生控制，bgfx 统一预览（纯预览/分析预览/录像预览），支持拍照、录像与基础可复用 UI。
 
-**Architecture:** Keep camera control and media encoding native per platform, while unifying preview rendering in a shared C++ bgfx render core. Feed video encoding from bgfx offscreen output to keep preview and recorded output consistent. Expose aligned Kotlin and Swift facades with shared state, error, and mode semantics.
+**架构：** 采集和编码封装保留平台原生实现；共享 C++/bgfx 渲染核心负责预览与离屏输出。录像编码输入来自 bgfx 离屏结果，保证预览与成片一致（所见即所得）。
 
-**Tech Stack:** Android Camera2 + MediaCodec/MediaMuxer + Kotlin/JUnit; iOS AVCaptureSession + AVAssetWriter + Swift/XCTest; shared C++17 core with bgfx and CMake/CTest.
+**技术栈：** Android Camera2 + MediaCodec/MediaMuxer + Kotlin/JUnit；iOS AVCaptureSession + AVAssetWriter + Swift/XCTest；Shared C++17 + bgfx + CMake/CTest。
 
 ---
 
-## Execution Rules
+## 执行约束
 
-- Use `@test-driven-development` for every task: test first, fail, minimal implementation, pass.
-- Use `@systematic-debugging` if any test fails unexpectedly.
-- Use `@verification-before-completion` before claiming any milestone complete.
-- Use frequent small commits; one commit per task.
-- Keep APIs and behavior aligned across Kotlin and Swift facades.
+- 每个任务严格执行 TDD：先写失败测试，再最小实现，再验证通过。
+- 单个任务控制在 2-5 分钟动作粒度。
+- 每任务单独提交，保持小步提交历史。
+- 任一异常失败使用 `@systematic-debugging` 排查。
+- 任务或里程碑声明完成前执行 `@verification-before-completion`。
 
-### Task 1: Workspace Skeleton and Build Baseline
+### 任务 1：搭建工程骨架与最小可构建基线
 
-**Files:**
-- Create: `CMakeLists.txt`
-- Create: `shared/render-core/CMakeLists.txt`
-- Create: `shared/render-core/tests/test_build_smoke.cpp`
-- Create: `android/settings.gradle.kts`
-- Create: `android/build.gradle.kts`
-- Create: `ios/SuperCameraKit.xcodeproj/project.pbxproj` (or generated equivalent)
+**文件：**
+- 新建：`CMakeLists.txt`
+- 新建：`shared/render-core/CMakeLists.txt`
+- 新建：`shared/render-core/tests/test_build_smoke.cpp`
+- 新建：`android/settings.gradle.kts`
+- 新建：`android/build.gradle.kts`
+- 新建：`ios/SuperCameraKit.xcodeproj/project.pbxproj`（或等效生成文件）
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```cpp
 // shared/render-core/tests/test_build_smoke.cpp
 int main() {
-    return 1; // force fail first
+    return 1;
 }
 ```
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `cmake -S . -B build && cmake --build build && ctest --test-dir build --output-on-failure`
-Expected: FAIL for `test_build_smoke`.
+运行：`cmake -S . -B build && cmake --build build && ctest --test-dir build --output-on-failure`
+预期：`test_build_smoke` 失败。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```cpp
 // shared/render-core/tests/test_build_smoke.cpp
@@ -65,45 +65,43 @@ add_executable(test_build_smoke tests/test_build_smoke.cpp)
 add_test(NAME test_build_smoke COMMAND test_build_smoke)
 ```
 
-**Step 4: Run test to verify it passes**
+**步骤 4：运行并确认通过**
 
-Run: `cmake -S . -B build && cmake --build build && ctest --test-dir build --output-on-failure`
-Expected: PASS `test_build_smoke`.
+运行：`cmake -S . -B build && cmake --build build && ctest --test-dir build --output-on-failure`
+预期：`test_build_smoke` 通过。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add CMakeLists.txt shared/render-core/CMakeLists.txt shared/render-core/tests/test_build_smoke.cpp android ios
-git commit -m "chore: bootstrap multiplatform workspace and build baseline"
+git commit -m "chore: 初始化多端工程骨架与构建基线"
 ```
 
-### Task 2: Shared Contracts (State, Mode, Error)
+### 任务 2：共享契约类型（模式/状态/错误码）
 
-**Files:**
-- Create: `shared/render-core/include/scamera/core/types.h`
-- Create: `shared/render-core/src/types.cpp`
-- Create: `shared/render-core/tests/test_types.cpp`
-- Modify: `shared/render-core/CMakeLists.txt`
+**文件：**
+- 新建：`shared/render-core/include/scamera/core/types.h`
+- 新建：`shared/render-core/src/types.cpp`
+- 新建：`shared/render-core/tests/test_types.cpp`
+- 修改：`shared/render-core/CMakeLists.txt`
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```cpp
-// shared/render-core/tests/test_types.cpp
 #include "scamera/core/types.h"
 int main() {
-    return static_cast<int>(scamera::WorkMode::ANALYSIS) == 0 ? 0 : 1;
+    return static_cast<int>(scamera::WorkMode::ANALYSIS) == 1 ? 0 : 1;
 }
 ```
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `cmake --build build && ctest --test-dir build --output-on-failure`
-Expected: FAIL with missing header/symbol.
+运行：`cmake --build build && ctest --test-dir build -R test_types --output-on-failure`
+预期：头文件或符号缺失导致失败。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```cpp
-// shared/render-core/include/scamera/core/types.h
 #pragma once
 
 namespace scamera {
@@ -127,54 +125,45 @@ enum class ErrorCode {
 } // namespace scamera
 ```
 
-```cmake
-# shared/render-core/CMakeLists.txt additions
-add_executable(test_types tests/test_types.cpp src/types.cpp)
-target_include_directories(test_types PRIVATE include)
-add_test(NAME test_types COMMAND test_types)
-```
+**步骤 4：运行并确认通过**
 
-**Step 4: Run test to verify it passes**
+运行：`cmake --build build && ctest --test-dir build -R test_types --output-on-failure`
+预期：`test_types` 通过。
 
-Run: `cmake --build build && ctest --test-dir build --output-on-failure`
-Expected: PASS `test_types`.
-
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add shared/render-core/include/scamera/core/types.h shared/render-core/src/types.cpp shared/render-core/tests/test_types.cpp shared/render-core/CMakeLists.txt
-git commit -m "feat: add shared camera contracts for mode state and errors"
+git commit -m "feat: 新增共享模式状态与错误码契约"
 ```
 
-### Task 3: Shared Camera State Machine
+### 任务 3：实现共享状态机
 
-**Files:**
-- Create: `shared/render-core/include/scamera/core/state_machine.h`
-- Create: `shared/render-core/src/state_machine.cpp`
-- Create: `shared/render-core/tests/test_state_machine.cpp`
-- Modify: `shared/render-core/CMakeLists.txt`
+**文件：**
+- 新建：`shared/render-core/include/scamera/core/state_machine.h`
+- 新建：`shared/render-core/src/state_machine.cpp`
+- 新建：`shared/render-core/tests/test_state_machine.cpp`
+- 修改：`shared/render-core/CMakeLists.txt`
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```cpp
-// shared/render-core/tests/test_state_machine.cpp
 #include "scamera/core/state_machine.h"
 int main() {
     scamera::StateMachine sm;
-    bool ok = sm.transition(scamera::CameraState::INITIALIZING);
-    return ok ? 0 : 1;
+    if (!sm.transition(scamera::CameraState::INITIALIZING)) return 1;
+    return sm.current() == scamera::CameraState::INITIALIZING ? 0 : 1;
 }
 ```
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `cmake --build build && ctest --test-dir build -R test_state_machine --output-on-failure`
-Expected: FAIL (missing implementation or wrong transition logic).
+运行：`cmake --build build && ctest --test-dir build -R test_state_machine --output-on-failure`
+预期：缺失实现或状态切换错误导致失败。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```cpp
-// shared/render-core/include/scamera/core/state_machine.h
 #pragma once
 #include "scamera/core/types.h"
 
@@ -192,7 +181,6 @@ private:
 ```
 
 ```cpp
-// shared/render-core/src/state_machine.cpp
 #include "scamera/core/state_machine.h"
 
 namespace scamera {
@@ -200,7 +188,7 @@ namespace scamera {
 CameraState StateMachine::current() const { return state_; }
 
 bool StateMachine::transition(CameraState next) {
-    const CameraState cur = state_;
+    const auto cur = state_;
     const bool valid =
         (cur == CameraState::IDLE && next == CameraState::INITIALIZING) ||
         (cur == CameraState::INITIALIZING && next == CameraState::PREVIEWING) ||
@@ -215,55 +203,57 @@ bool StateMachine::transition(CameraState next) {
 } // namespace scamera
 ```
 
-**Step 4: Run test to verify it passes**
+**步骤 4：运行并确认通过**
 
-Run: `cmake --build build && ctest --test-dir build -R test_state_machine --output-on-failure`
-Expected: PASS `test_state_machine`.
+运行：`cmake --build build && ctest --test-dir build -R test_state_machine --output-on-failure`
+预期：通过。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add shared/render-core/include/scamera/core/state_machine.h shared/render-core/src/state_machine.cpp shared/render-core/tests/test_state_machine.cpp shared/render-core/CMakeLists.txt
-git commit -m "feat: add shared camera lifecycle state machine"
+git commit -m "feat: 实现共享生命周期状态机"
 ```
 
-### Task 4: ResolutionSelector with Mode-Specific Strategy
+### 任务 4：实现 ResolutionSelector（按模式选择分辨率）
 
-**Files:**
-- Create: `shared/render-core/include/scamera/core/resolution_selector.h`
-- Create: `shared/render-core/src/resolution_selector.cpp`
-- Create: `shared/render-core/tests/test_resolution_selector.cpp`
-- Modify: `shared/render-core/CMakeLists.txt`
+**文件：**
+- 新建：`shared/render-core/include/scamera/core/resolution_selector.h`
+- 新建：`shared/render-core/src/resolution_selector.cpp`
+- 新建：`shared/render-core/tests/test_resolution_selector.cpp`
+- 修改：`shared/render-core/CMakeLists.txt`
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```cpp
-// shared/render-core/tests/test_resolution_selector.cpp
 #include "scamera/core/resolution_selector.h"
+
 int main() {
     using namespace scamera;
     ResolutionSelector selector;
-    Resolution out = selector.select(WorkMode::VIDEO, 1080, 1920, {{1280, 720}, {1920, 1080}});
-    return (out.width == 1920 && out.height == 1080) ? 0 : 1;
+    Resolution r = selector.select(WorkMode::VIDEO, 1080, 1920, {{1280, 720}, {1920, 1080}});
+    return (r.width == 1920 && r.height == 1080) ? 0 : 1;
 }
 ```
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `cmake --build build && ctest --test-dir build -R test_resolution_selector --output-on-failure`
-Expected: FAIL due missing class or wrong priority rules.
+运行：`cmake --build build && ctest --test-dir build -R test_resolution_selector --output-on-failure`
+预期：类或策略缺失导致失败。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```cpp
-// shared/render-core/include/scamera/core/resolution_selector.h
 #pragma once
 #include <vector>
 #include "scamera/core/types.h"
 
 namespace scamera {
 
-struct Resolution { int width; int height; };
+struct Resolution {
+    int width;
+    int height;
+};
 
 class ResolutionSelector {
 public:
@@ -274,13 +264,12 @@ public:
 ```
 
 ```cpp
-// shared/render-core/src/resolution_selector.cpp
 #include "scamera/core/resolution_selector.h"
 #include <cmath>
 
 namespace scamera {
 
-static double aspect_delta(int w, int h, double target) {
+static double ratio_delta(int w, int h, double target) {
     return std::abs((static_cast<double>(w) / static_cast<double>(h)) - target);
 }
 
@@ -289,7 +278,7 @@ Resolution ResolutionSelector::select(WorkMode mode, int screenWidth, int screen
 
     if (mode == WorkMode::PHOTO || mode == WorkMode::VIDEO) {
         const Resolution priority[] = {{1920,1080}, {1600,900}, {1280,720}, {960,540}};
-        for (const auto& p : priority) {
+        for (auto p : priority) {
             for (const auto& s : supported) {
                 if (s.width == p.width && s.height == p.height) return s;
             }
@@ -297,18 +286,18 @@ Resolution ResolutionSelector::select(WorkMode mode, int screenWidth, int screen
         return supported.front();
     }
 
-    const double targetAspect = static_cast<double>(screenWidth) / static_cast<double>(screenHeight);
+    const double targetRatio = static_cast<double>(screenWidth) / static_cast<double>(screenHeight);
     Resolution best = supported.front();
-    double bestAspect = aspect_delta(best.width, best.height, targetAspect);
-    double bestAreaDelta = std::abs((best.width * best.height) - (screenWidth * screenHeight));
+    double bestRatio = ratio_delta(best.width, best.height, targetRatio);
+    double bestArea = std::abs((best.width * best.height) - (screenWidth * screenHeight));
 
     for (const auto& s : supported) {
-        const double ad = aspect_delta(s.width, s.height, targetAspect);
-        const double areaDelta = std::abs((s.width * s.height) - (screenWidth * screenHeight));
-        if (ad < bestAspect || (ad == bestAspect && areaDelta < bestAreaDelta)) {
+        double rd = ratio_delta(s.width, s.height, targetRatio);
+        double ad = std::abs((s.width * s.height) - (screenWidth * screenHeight));
+        if (rd < bestRatio || (rd == bestRatio && ad < bestArea)) {
             best = s;
-            bestAspect = ad;
-            bestAreaDelta = areaDelta;
+            bestRatio = rd;
+            bestArea = ad;
         }
     }
     return best;
@@ -317,47 +306,46 @@ Resolution ResolutionSelector::select(WorkMode mode, int screenWidth, int screen
 } // namespace scamera
 ```
 
-**Step 4: Run test to verify it passes**
+**步骤 4：运行并确认通过**
 
-Run: `cmake --build build && ctest --test-dir build -R test_resolution_selector --output-on-failure`
-Expected: PASS `test_resolution_selector`.
+运行：`cmake --build build && ctest --test-dir build -R test_resolution_selector --output-on-failure`
+预期：通过。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add shared/render-core/include/scamera/core/resolution_selector.h shared/render-core/src/resolution_selector.cpp shared/render-core/tests/test_resolution_selector.cpp shared/render-core/CMakeLists.txt
-git commit -m "feat: add mode-aware resolution selector"
+git commit -m "feat: 实现按模式分辨率选择器"
 ```
 
-### Task 5: Shared bgfx Render Pipeline Interface (Display + Offscreen)
+### 任务 5：共享渲染管线接口（预览+离屏）
 
-**Files:**
-- Create: `shared/render-core/include/scamera/render/render_pipeline.h`
-- Create: `shared/render-core/src/render_pipeline.cpp`
-- Create: `shared/render-core/tests/test_render_pipeline.cpp`
-- Modify: `shared/render-core/CMakeLists.txt`
+**文件：**
+- 新建：`shared/render-core/include/scamera/render/render_pipeline.h`
+- 新建：`shared/render-core/src/render_pipeline.cpp`
+- 新建：`shared/render-core/tests/test_render_pipeline.cpp`
+- 修改：`shared/render-core/CMakeLists.txt`
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```cpp
-// shared/render-core/tests/test_render_pipeline.cpp
 #include "scamera/render/render_pipeline.h"
+
 int main() {
-    scamera::RenderPipeline pipeline;
-    const bool ok = pipeline.configurePreview(1280, 720) && pipeline.configureOffscreen(1920, 1080);
+    scamera::RenderPipeline p;
+    bool ok = p.configurePreview(1280, 720) && p.configureOffscreen(1920, 1080);
     return ok ? 0 : 1;
 }
 ```
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `cmake --build build && ctest --test-dir build -R test_render_pipeline --output-on-failure`
-Expected: FAIL due missing methods.
+运行：`cmake --build build && ctest --test-dir build -R test_render_pipeline --output-on-failure`
+预期：接口未实现导致失败。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```cpp
-// shared/render-core/include/scamera/render/render_pipeline.h
 #pragma once
 
 namespace scamera {
@@ -373,7 +361,6 @@ public:
 ```
 
 ```cpp
-// shared/render-core/src/render_pipeline.cpp
 #include "scamera/render/render_pipeline.h"
 
 namespace scamera {
@@ -393,31 +380,30 @@ bool RenderPipeline::submitFrame(void* yuvFrameHandle, long long timestampNs) {
 } // namespace scamera
 ```
 
-**Step 4: Run test to verify it passes**
+**步骤 4：运行并确认通过**
 
-Run: `cmake --build build && ctest --test-dir build -R test_render_pipeline --output-on-failure`
-Expected: PASS `test_render_pipeline`.
+运行：`cmake --build build && ctest --test-dir build -R test_render_pipeline --output-on-failure`
+预期：通过。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add shared/render-core/include/scamera/render/render_pipeline.h shared/render-core/src/render_pipeline.cpp shared/render-core/tests/test_render_pipeline.cpp shared/render-core/CMakeLists.txt
-git commit -m "feat: add shared render pipeline interface for preview and offscreen"
+git commit -m "feat: 新增预览与离屏渲染接口"
 ```
 
-### Task 6: Android SDK Facade + State/Error Mapping (Unit Tests)
+### 任务 6：Android 门面层与状态映射
 
-**Files:**
-- Create: `android/supercamera/src/main/java/com/dcamera/SuperCamera.kt`
-- Create: `android/supercamera/src/main/java/com/dcamera/core/CameraEvent.kt`
-- Create: `android/supercamera/src/test/java/com/dcamera/SuperCameraStateTest.kt`
-- Create: `android/supercamera/build.gradle.kts`
-- Modify: `android/settings.gradle.kts`
+**文件：**
+- 新建：`android/supercamera/src/main/java/com/dcamera/SuperCamera.kt`
+- 新建：`android/supercamera/src/main/java/com/dcamera/core/CameraEvent.kt`
+- 新建：`android/supercamera/src/test/java/com/dcamera/SuperCameraStateTest.kt`
+- 新建：`android/supercamera/build.gradle.kts`
+- 修改：`android/settings.gradle.kts`
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```kotlin
-// android/supercamera/src/test/java/com/dcamera/SuperCameraStateTest.kt
 package com.dcamera
 
 import kotlin.test.Test
@@ -425,7 +411,7 @@ import kotlin.test.assertEquals
 
 class SuperCameraStateTest {
     @Test
-    fun modeSwitchToVideoUpdatesFacadeState() {
+    fun 切换到视频模式后门面状态正确更新() {
         val camera = SuperCamera()
         camera.setWorkMode(WorkMode.VIDEO)
         assertEquals(WorkMode.VIDEO, camera.currentWorkMode())
@@ -433,15 +419,14 @@ class SuperCameraStateTest {
 }
 ```
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `./gradlew :android:supercamera:testDebugUnitTest --tests "com.dcamera.SuperCameraStateTest"`
-Expected: FAIL unresolved `SuperCamera` or `setWorkMode`.
+运行：`./gradlew :android:supercamera:testDebugUnitTest --tests "com.dcamera.SuperCameraStateTest"`
+预期：`SuperCamera` 或 `WorkMode` 未定义导致失败。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```kotlin
-// android/supercamera/src/main/java/com/dcamera/SuperCamera.kt
 package com.dcamera
 
 enum class WorkMode { PURE_PREVIEW, ANALYSIS, PHOTO, VIDEO }
@@ -453,47 +438,45 @@ class SuperCamera {
 }
 ```
 
-**Step 4: Run test to verify it passes**
+**步骤 4：运行并确认通过**
 
-Run: `./gradlew :android:supercamera:testDebugUnitTest --tests "com.dcamera.SuperCameraStateTest"`
-Expected: PASS 1 test.
+运行：`./gradlew :android:supercamera:testDebugUnitTest --tests "com.dcamera.SuperCameraStateTest"`
+预期：通过。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add android/supercamera android/settings.gradle.kts
-git commit -m "feat(android): add facade mode state mapping with unit tests"
+git commit -m "feat(android): 门面模式状态映射与单测"
 ```
 
-### Task 7: Android Camera2 Preview to bgfx Bridge
+### 任务 7：Android Camera2 到 bgfx 预览桥接
 
-**Files:**
-- Create: `android/supercamera/src/main/java/com/dcamera/camera2/Camera2SessionController.kt`
-- Create: `android/supercamera/src/main/java/com/dcamera/render/PreviewRenderBridge.kt`
-- Create: `android/supercamera/src/androidTest/java/com/dcamera/PreviewPipelineInstrumentedTest.kt`
-- Modify: `android/supercamera/src/main/java/com/dcamera/SuperCamera.kt`
+**文件：**
+- 新建：`android/supercamera/src/main/java/com/dcamera/camera2/Camera2SessionController.kt`
+- 新建：`android/supercamera/src/main/java/com/dcamera/render/PreviewRenderBridge.kt`
+- 新建：`android/supercamera/src/androidTest/java/com/dcamera/PreviewPipelineInstrumentedTest.kt`
+- 修改：`android/supercamera/src/main/java/com/dcamera/SuperCamera.kt`
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```kotlin
-// android/supercamera/src/androidTest/java/com/dcamera/PreviewPipelineInstrumentedTest.kt
 @Test
-fun startPreviewTransitionsToPreviewing() {
+fun startPreview后状态进入PREVIEWING() {
     val camera = SuperCamera()
     camera.startPreview(FakeSurfaceHandle(1L))
     assertEquals(CameraState.PREVIEWING, camera.currentState())
 }
 ```
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `./gradlew :android:supercamera:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dcamera.PreviewPipelineInstrumentedTest`
-Expected: FAIL with missing preview pipeline implementation.
+运行：`./gradlew :android:supercamera:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dcamera.PreviewPipelineInstrumentedTest`
+预期：预览桥接或状态流转未实现导致失败。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```kotlin
-// android/supercamera/src/main/java/com/dcamera/render/PreviewRenderBridge.kt
 package com.dcamera.render
 
 class PreviewRenderBridge {
@@ -503,8 +486,8 @@ class PreviewRenderBridge {
 ```
 
 ```kotlin
-// android/supercamera/src/main/java/com/dcamera/SuperCamera.kt (additions)
 enum class CameraState { IDLE, INITIALIZING, PREVIEWING, CAPTURING, RECORDING, RELEASING }
+
 private var state: CameraState = CameraState.IDLE
 fun currentState(): CameraState = state
 fun startPreview(surface: FakeSurfaceHandle) {
@@ -513,32 +496,32 @@ fun startPreview(surface: FakeSurfaceHandle) {
 }
 ```
 
-**Step 4: Run test to verify it passes**
+**步骤 4：运行并确认通过**
 
-Run: `./gradlew :android:supercamera:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dcamera.PreviewPipelineInstrumentedTest`
-Expected: PASS test class.
+运行：`./gradlew :android:supercamera:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dcamera.PreviewPipelineInstrumentedTest`
+预期：通过。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add android/supercamera/src/main android/supercamera/src/androidTest
-git commit -m "feat(android): connect Camera2 preview flow to bgfx bridge"
+git commit -m "feat(android): 接入Camera2到bgfx预览桥接链路"
 ```
 
-### Task 8: Android Photo and bgfx-Offscreen Video Recording
+### 任务 8：Android 拍照与 bgfx 离屏录像控制器
 
-**Files:**
-- Create: `android/supercamera/src/main/java/com/dcamera/capture/CaptureController.kt`
-- Create: `android/supercamera/src/main/java/com/dcamera/record/RecordController.kt`
-- Create: `android/supercamera/src/main/java/com/dcamera/record/BgfxOffscreenFrameSource.kt`
-- Create: `android/supercamera/src/androidTest/java/com/dcamera/RecordControllerInstrumentedTest.kt`
-- Modify: `android/supercamera/src/main/java/com/dcamera/SuperCamera.kt`
+**文件：**
+- 新建：`android/supercamera/src/main/java/com/dcamera/capture/CaptureController.kt`
+- 新建：`android/supercamera/src/main/java/com/dcamera/record/RecordController.kt`
+- 新建：`android/supercamera/src/main/java/com/dcamera/record/BgfxOffscreenFrameSource.kt`
+- 新建：`android/supercamera/src/androidTest/java/com/dcamera/RecordControllerInstrumentedTest.kt`
+- 修改：`android/supercamera/src/main/java/com/dcamera/SuperCamera.kt`
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```kotlin
 @Test
-fun startAndStopRecordCreatesMp4FromBgfxSource() {
+fun startStopRecord返回mp4路径() {
     val controller = RecordController(FakeBgfxFrameSource())
     controller.startRecord("/tmp/test.mp4")
     val result = controller.stopRecord()
@@ -546,15 +529,14 @@ fun startAndStopRecordCreatesMp4FromBgfxSource() {
 }
 ```
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `./gradlew :android:supercamera:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dcamera.RecordControllerInstrumentedTest`
-Expected: FAIL unresolved `RecordController` or missing source wiring.
+运行：`./gradlew :android:supercamera:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dcamera.RecordControllerInstrumentedTest`
+预期：录像控制器或离屏输入未实现导致失败。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```kotlin
-// android/supercamera/src/main/java/com/dcamera/record/BgfxOffscreenFrameSource.kt
 package com.dcamera.record
 
 interface BgfxOffscreenFrameSource {
@@ -563,7 +545,6 @@ interface BgfxOffscreenFrameSource {
 ```
 
 ```kotlin
-// android/supercamera/src/main/java/com/dcamera/record/RecordController.kt
 package com.dcamera.record
 
 data class RecordResult(val path: String)
@@ -575,35 +556,34 @@ class RecordController(private val frameSource: BgfxOffscreenFrameSource) {
 }
 ```
 
-**Step 4: Run test to verify it passes**
+**步骤 4：运行并确认通过**
 
-Run: `./gradlew :android:supercamera:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dcamera.RecordControllerInstrumentedTest`
-Expected: PASS recording controller test.
+运行：`./gradlew :android:supercamera:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dcamera.RecordControllerInstrumentedTest`
+预期：通过。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add android/supercamera/src/main android/supercamera/src/androidTest
-git commit -m "feat(android): add photo and bgfx-offscreen recording controllers"
+git commit -m "feat(android): 新增拍照与bgfx离屏录像控制器"
 ```
 
-### Task 9: iOS Swift Facade + Preview Pipeline to bgfx
+### 任务 9：iOS 门面层与预览桥接
 
-**Files:**
-- Create: `ios/SuperCameraKit/Sources/SuperCameraKit/SuperCamera.swift`
-- Create: `ios/SuperCameraKit/Sources/SuperCameraKit/PreviewRenderBridge.swift`
-- Create: `ios/SuperCameraKit/Tests/SuperCameraKitTests/SuperCameraStateTests.swift`
-- Create: `ios/SuperCameraKit/Tests/SuperCameraKitTests/PreviewPipelineTests.swift`
+**文件：**
+- 新建：`ios/SuperCameraKit/Sources/SuperCameraKit/SuperCamera.swift`
+- 新建：`ios/SuperCameraKit/Sources/SuperCameraKit/PreviewRenderBridge.swift`
+- 新建：`ios/SuperCameraKit/Tests/SuperCameraKitTests/SuperCameraStateTests.swift`
+- 新建：`ios/SuperCameraKit/Tests/SuperCameraKitTests/PreviewPipelineTests.swift`
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```swift
-// ios/SuperCameraKit/Tests/SuperCameraKitTests/SuperCameraStateTests.swift
 import XCTest
 @testable import SuperCameraKit
 
 final class SuperCameraStateTests: XCTestCase {
-    func testSetVideoModeUpdatesFacade() {
+    func test切换视频模式后门面状态更新() {
         let camera = SuperCamera()
         camera.setWorkMode(.video)
         XCTAssertEqual(camera.currentWorkMode(), .video)
@@ -611,15 +591,14 @@ final class SuperCameraStateTests: XCTestCase {
 }
 ```
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `xcodebuild test -scheme SuperCameraKit -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraKitTests/SuperCameraStateTests`
-Expected: FAIL unresolved `SuperCamera`.
+运行：`xcodebuild test -scheme SuperCameraKit -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraKitTests/SuperCameraStateTests`
+预期：门面层未实现导致失败。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```swift
-// ios/SuperCameraKit/Sources/SuperCameraKit/SuperCamera.swift
 import Foundation
 
 public enum WorkMode { case purePreview, analysis, photo, video }
@@ -633,7 +612,6 @@ public final class SuperCamera {
 ```
 
 ```swift
-// ios/SuperCameraKit/Sources/SuperCameraKit/PreviewRenderBridge.swift
 import Foundation
 
 public final class PreviewRenderBridge {
@@ -643,34 +621,34 @@ public final class PreviewRenderBridge {
 }
 ```
 
-**Step 4: Run test to verify it passes**
+**步骤 4：运行并确认通过**
 
-Run: `xcodebuild test -scheme SuperCameraKit -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraKitTests/SuperCameraStateTests`
-Expected: PASS state test.
+运行：`xcodebuild test -scheme SuperCameraKit -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraKitTests/SuperCameraStateTests`
+预期：通过。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add ios/SuperCameraKit
-git commit -m "feat(ios): add facade mode API and preview render bridge"
+git commit -m "feat(ios): 门面模式API与预览桥接基础实现"
 ```
 
-### Task 10: iOS Photo and bgfx-Offscreen Video Recording
+### 任务 10：iOS 拍照与 bgfx 离屏录像控制器
 
-**Files:**
-- Create: `ios/SuperCameraKit/Sources/SuperCameraKit/CaptureController.swift`
-- Create: `ios/SuperCameraKit/Sources/SuperCameraKit/RecordController.swift`
-- Create: `ios/SuperCameraKit/Sources/SuperCameraKit/BgfxOffscreenFrameSource.swift`
-- Create: `ios/SuperCameraKit/Tests/SuperCameraKitTests/RecordControllerTests.swift`
+**文件：**
+- 新建：`ios/SuperCameraKit/Sources/SuperCameraKit/CaptureController.swift`
+- 新建：`ios/SuperCameraKit/Sources/SuperCameraKit/RecordController.swift`
+- 新建：`ios/SuperCameraKit/Sources/SuperCameraKit/BgfxOffscreenFrameSource.swift`
+- 新建：`ios/SuperCameraKit/Tests/SuperCameraKitTests/RecordControllerTests.swift`
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```swift
 import XCTest
 @testable import SuperCameraKit
 
 final class RecordControllerTests: XCTestCase {
-    func testStopRecordReturnsMp4Path() {
+    func test停止录像返回mp4路径() {
         let controller = RecordController(frameSource: FakeBgfxSource())
         controller.startRecord(path: "/tmp/out.mp4")
         let result = controller.stopRecord()
@@ -679,15 +657,14 @@ final class RecordControllerTests: XCTestCase {
 }
 ```
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `xcodebuild test -scheme SuperCameraKit -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraKitTests/RecordControllerTests`
-Expected: FAIL unresolved `RecordController`.
+运行：`xcodebuild test -scheme SuperCameraKit -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraKitTests/RecordControllerTests`
+预期：录像控制器或协议未实现导致失败。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```swift
-// ios/SuperCameraKit/Sources/SuperCameraKit/BgfxOffscreenFrameSource.swift
 import Foundation
 
 public protocol BgfxOffscreenFrameSource {
@@ -696,7 +673,6 @@ public protocol BgfxOffscreenFrameSource {
 ```
 
 ```swift
-// ios/SuperCameraKit/Sources/SuperCameraKit/RecordController.swift
 import Foundation
 
 public struct RecordResult { public let path: String }
@@ -719,31 +695,31 @@ public final class RecordController {
 }
 ```
 
-**Step 4: Run test to verify it passes**
+**步骤 4：运行并确认通过**
 
-Run: `xcodebuild test -scheme SuperCameraKit -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraKitTests/RecordControllerTests`
-Expected: PASS recording test.
+运行：`xcodebuild test -scheme SuperCameraKit -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraKitTests/RecordControllerTests`
+预期：通过。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add ios/SuperCameraKit
-git commit -m "feat(ios): add photo and bgfx-offscreen recording controllers"
+git commit -m "feat(ios): 新增拍照与bgfx离屏录像控制器"
 ```
 
-### Task 11: Basic UI Kit on Android and iOS
+### 任务 11：基础 UI 组件（Android + iOS）
 
-**Files:**
-- Create: `android/supercamera-ui/src/main/java/com/dcamera/ui/BasicCameraView.kt`
-- Create: `android/supercamera-ui/src/test/java/com/dcamera/ui/BasicCameraViewTest.kt`
-- Create: `ios/SuperCameraUI/Sources/SuperCameraUI/BasicCameraView.swift`
-- Create: `ios/SuperCameraUI/Tests/SuperCameraUITests/BasicCameraViewTests.swift`
+**文件：**
+- 新建：`android/supercamera-ui/src/main/java/com/dcamera/ui/BasicCameraView.kt`
+- 新建：`android/supercamera-ui/src/test/java/com/dcamera/ui/BasicCameraViewTest.kt`
+- 新建：`ios/SuperCameraUI/Sources/SuperCameraUI/BasicCameraView.swift`
+- 新建：`ios/SuperCameraUI/Tests/SuperCameraUITests/BasicCameraViewTests.swift`
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```kotlin
 @Test
-fun recordButtonTogglesRecordingStateLabel() {
+fun 点击录制按钮后显示REC角标() {
     val view = BasicCameraView(FakeContext())
     view.onRecordTapped()
     assertEquals("REC", view.recordingBadgeText())
@@ -751,22 +727,22 @@ fun recordButtonTogglesRecordingStateLabel() {
 ```
 
 ```swift
-func testRecordTapShowsRecBadge() {
+func test点击录制后显示REC标记() {
     let view = BasicCameraView()
     view.onRecordTapped()
     XCTAssertEqual(view.recordingBadgeText(), "REC")
 }
 ```
 
-**Step 2: Run tests to verify they fail**
+**步骤 2：运行并确认失败**
 
-Run: `./gradlew :android:supercamera-ui:testDebugUnitTest`
-Expected: FAIL unresolved `BasicCameraView`.
+运行：`./gradlew :android:supercamera-ui:testDebugUnitTest`
+预期：Android 失败（类缺失）。
 
-Run: `xcodebuild test -scheme SuperCameraUI -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraUITests/BasicCameraViewTests`
-Expected: FAIL unresolved `BasicCameraView`.
+运行：`xcodebuild test -scheme SuperCameraUI -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraUITests/BasicCameraViewTests`
+预期：iOS 失败（类缺失）。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```kotlin
 class BasicCameraView(context: Context) : FrameLayout(context) {
@@ -785,30 +761,30 @@ public final class BasicCameraView {
 }
 ```
 
-**Step 4: Run tests to verify they pass**
+**步骤 4：运行并确认通过**
 
-Run: `./gradlew :android:supercamera-ui:testDebugUnitTest`
-Expected: PASS UI unit tests.
+运行：`./gradlew :android:supercamera-ui:testDebugUnitTest`
+预期：通过。
 
-Run: `xcodebuild test -scheme SuperCameraUI -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraUITests/BasicCameraViewTests`
-Expected: PASS UI tests.
+运行：`xcodebuild test -scheme SuperCameraUI -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraUITests/BasicCameraViewTests`
+预期：通过。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add android/supercamera-ui ios/SuperCameraUI
-git commit -m "feat(ui): add replaceable basic camera ui components for android and ios"
+git commit -m "feat(ui): 增加可替换基础相机UI组件"
 ```
 
-### Task 12: Observability and Error Reporting Contracts
+### 任务 12：可观测性契约与双端映射
 
-**Files:**
-- Create: `shared/render-core/include/scamera/telemetry/metrics.h`
-- Create: `android/supercamera/src/main/java/com/dcamera/telemetry/SessionMetrics.kt`
-- Create: `ios/SuperCameraKit/Sources/SuperCameraKit/SessionMetrics.swift`
-- Create: `shared/render-core/tests/test_metrics_contract.cpp`
+**文件：**
+- 新建：`shared/render-core/include/scamera/telemetry/metrics.h`
+- 新建：`android/supercamera/src/main/java/com/dcamera/telemetry/SessionMetrics.kt`
+- 新建：`ios/SuperCameraKit/Sources/SuperCameraKit/SessionMetrics.swift`
+- 新建：`shared/render-core/tests/test_metrics_contract.cpp`
 
-**Step 1: Write the failing test**
+**步骤 1：写失败测试**
 
 ```cpp
 #include "scamera/telemetry/metrics.h"
@@ -819,15 +795,14 @@ int main() {
 }
 ```
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `cmake --build build && ctest --test-dir build -R test_metrics_contract --output-on-failure`
-Expected: FAIL missing metrics contract.
+运行：`cmake --build build && ctest --test-dir build -R test_metrics_contract --output-on-failure`
+预期：契约缺失导致失败。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```cpp
-// shared/render-core/include/scamera/telemetry/metrics.h
 #pragma once
 
 namespace scamera {
@@ -844,42 +819,42 @@ struct SessionMetrics {
 } // namespace scamera
 ```
 
-**Step 4: Run test to verify it passes**
+**步骤 4：运行并确认通过**
 
-Run: `cmake --build build && ctest --test-dir build -R test_metrics_contract --output-on-failure`
-Expected: PASS metrics contract test.
+运行：`cmake --build build && ctest --test-dir build -R test_metrics_contract --output-on-failure`
+预期：通过。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add shared/render-core/include/scamera/telemetry/metrics.h shared/render-core/tests/test_metrics_contract.cpp android/supercamera/src/main/java/com/dcamera/telemetry/SessionMetrics.kt ios/SuperCameraKit/Sources/SuperCameraKit/SessionMetrics.swift
-git commit -m "feat: add cross-platform telemetry contracts and mappings"
+git commit -m "feat: 增加跨端会话指标契约与映射"
 ```
 
-### Task 13: End-to-End Smoke Samples and Verification Gate
+### 任务 13：端到端样例与验证脚本
 
-**Files:**
-- Create: `samples/android-app/` (minimal integration app)
-- Create: `samples/ios-app/` (minimal integration app)
-- Create: `scripts/verify_mvp.sh`
-- Create: `docs/testing/mvp-manual-checklist.md`
+**文件：**
+- 新建：`samples/android-app/`（最小接入样例）
+- 新建：`samples/ios-app/`（最小接入样例）
+- 新建：`scripts/verify_mvp.sh`
+- 新建：`docs/testing/mvp-manual-checklist.md`
 
-**Step 1: Write the failing verification script first**
+**步骤 1：先写失败脚本**
 
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "FAIL: verification steps not implemented"
+echo "FAIL: 验证步骤尚未实现"
 exit 1
 ```
 
-**Step 2: Run script to verify it fails**
+**步骤 2：运行并确认失败**
 
-Run: `bash scripts/verify_mvp.sh`
-Expected: FAIL with explicit message.
+运行：`bash scripts/verify_mvp.sh`
+预期：失败并打印失败原因。
 
-**Step 3: Write minimal implementation**
+**步骤 3：最小实现**
 
 ```bash
 #!/usr/bin/env bash
@@ -890,37 +865,37 @@ ctest --test-dir build --output-on-failure
 ./gradlew :android:supercamera:testDebugUnitTest
 xcodebuild test -scheme SuperCameraKit -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:SuperCameraKitTests
 
-echo "PASS: MVP verification baseline complete"
+echo "PASS: MVP 验证基线通过"
 ```
 
-**Step 4: Run script to verify it passes**
+**步骤 4：运行并确认通过**
 
-Run: `bash scripts/verify_mvp.sh`
-Expected: PASS summary line and zero exit code.
+运行：`bash scripts/verify_mvp.sh`
+预期：0 退出码并输出 `PASS`。
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 ```bash
 git add samples scripts/verify_mvp.sh docs/testing/mvp-manual-checklist.md
-git commit -m "test: add end-to-end smoke samples and mvp verification gate"
+git commit -m "test: 增加端到端样例与MVP验证脚本"
 ```
 
-## Milestone Exit Criteria
+## 里程碑退出标准
 
-- M1 (Tasks 1-5): shared contracts and bgfx render interfaces are testable and passing in CTest.
-- M2 (Tasks 6-8): Android facade, preview, photo, and bgfx-offscreen recording path pass unit/instrumentation tests.
-- M3 (Tasks 9-10): iOS facade, preview, photo, and bgfx-offscreen recording path pass XCTest.
-- M4 (Task 11): reusable basic UI components for both platforms pass tests.
-- M5 (Tasks 12-13): telemetry and cross-platform verification gate pass with repeatable scripts.
+- M1（任务 1-5）：共享核心契约与渲染接口测试全部通过。
+- M2（任务 6-8）：Android 预览/拍照/录像链路测试通过。
+- M3（任务 9-10）：iOS 预览/拍照/录像链路测试通过。
+- M4（任务 11）：双端基础 UI 组件测试通过。
+- M5（任务 12-13）：可观测性与验证脚本可稳定复跑。
 
-## Risks and Guardrails
+## 风险与控制
 
-- bgfx offscreen to encoder path can be performance-sensitive on low-end devices; keep queue bounded and monitor latency metrics from day one.
-- Android 7.0 device fragmentation may require targeted Camera2 quirks table.
-- iOS AVAssetWriter timing drift risk must be tracked by `avDriftMs` metric in early integration.
+- bgfx 离屏到编码输入的性能敏感，必须保持有界队列与背压控制。
+- Android 7.0 机型碎片化高，需尽早维护 Camera2 机型兼容策略。
+- iOS 录像时间戳漂移风险需通过 `avDriftMs` 指标持续监控。
 
-## Handoff Notes
+## 交接说明
 
-- Implement in a dedicated git worktree before starting coding.
-- Keep each task as one PR/commit unit where possible.
-- Do not start watermark/filter implementation in MVP; keep only RenderPass extension hooks.
+- 在独立 worktree 中按任务顺序执行。
+- 每个任务完成即提交，避免跨任务叠改。
+- V1 不落地滤镜/水印功能，仅保留 RenderPass 扩展钩子。
