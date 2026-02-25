@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "supercamera-android"
 include(":supercamera")
+include(":supercamera-ui")
