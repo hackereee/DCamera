@@ -18,6 +18,7 @@ ios/**/*.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 
 # Swift Package Manager
 .swiftpm/
+.build/
 Package.resolved
 
 # IDE
