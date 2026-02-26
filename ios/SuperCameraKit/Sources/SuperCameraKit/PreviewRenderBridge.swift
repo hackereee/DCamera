@@ -1,6 +1,6 @@
 import Foundation
 
-public final class PreviewRenderBridge {
+public final class PreviewRenderBridge: PreviewBridgePort {
     private var surfaceAttached: Bool = false
     public private(set) var frameCount: Int = 0
 

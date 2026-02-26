@@ -23,8 +23,19 @@ public final class SuperCamera {
     private var state: CameraState = .idle
     private var errorCallback: SCErrorCallback?
     private var recordPath: String = ""
+    private let previewSession: PreviewSessionPort
+    private let previewBridge: PreviewBridgePort
+    private let photoCapture: PhotoCapturePort
 
-    public init() {}
+    public init(
+        previewSession: PreviewSessionPort = NoOpPreviewSessionPort(),
+        previewBridge: PreviewBridgePort = PreviewRenderBridge(),
+        photoCapture: PhotoCapturePort = CaptureControllerAdapter()
+    ) {
+        self.previewSession = previewSession
+        self.previewBridge = previewBridge
+        self.photoCapture = photoCapture
+    }
 
     public func setWorkMode(_ mode: WorkMode) { self.mode = mode }
     public func currentWorkMode() -> WorkMode { mode }
@@ -38,7 +49,17 @@ public final class SuperCamera {
             return false
         }
         state = .initializing
-        // TODO: real implementation initializes AVCapture session and render pipeline.
+        guard previewSession.startPreview(surfaceHandle: surfaceHandle) else {
+            state = .idle
+            errorCallback?(.sessionConfigFailed, "preview session init failed")
+            return false
+        }
+        guard previewBridge.attach(surfaceHandle: surfaceHandle) else {
+            _ = previewSession.stopPreview()
+            state = .idle
+            errorCallback?(.renderInitFailed, "preview bridge attach failed")
+            return false
+        }
         state = .previewing
         return true
     }
@@ -50,8 +71,13 @@ public final class SuperCamera {
             return false
         }
         state = .releasing
-        // TODO: real implementation tears down camera and renderer resources.
+        previewBridge.detach()
+        let stopped = previewSession.stopPreview()
         state = .idle
+        if !stopped {
+            errorCallback?(.sessionConfigFailed, "preview session stop failed")
+            return false
+        }
         return true
     }
 
@@ -81,8 +107,11 @@ public final class SuperCamera {
             return CaptureResult(path: "")
         }
         state = .capturing
-        let result = CaptureResult(path: outputPath)
+        let result = photoCapture.capture(outputPath: outputPath)
         state = .previewing
+        if result.path.isEmpty {
+            errorCallback?(.fileIOFailed, "photo capture returned empty path")
+        }
         return result
     }
 }
