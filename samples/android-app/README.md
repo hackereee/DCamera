@@ -1,13 +1,18 @@
-# Android 最小接入样例
+# Android Demo 工程
 
-演示如何接入 SuperCamera 库完成预览、拍照、录像。
+## 运行
 
-## 接入步骤
-
-```kotlin
-val camera = SuperCamera()
-camera.setWorkMode(WorkMode.VIDEO)
-camera.startPreview(surfaceHandle)
+```bash
+cd android
+./gradlew -p ../samples/android-app :app:assembleDebug
 ```
 
-> 完整样例待 bgfx 渲染层集成后补充。
+安装 `samples/android-app/app/build/outputs/apk/debug/app-debug.apk` 后启动。
+
+## 手工验证
+
+1. 首次进入确认相机/麦克风权限弹窗出现。
+2. 允许后点击 `Start Preview`，结果区显示"预览已启动"。
+3. 点击 `Take Photo`，结果区显示"拍照成功"。
+4. 点击 `Start/Stop Record` 两次，结果区依次显示开始/停止录像。
+5. 点击 `Toggle UI Badge`，`tvUiBadge` 显示 `REC`。

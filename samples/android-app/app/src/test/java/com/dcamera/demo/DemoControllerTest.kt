@@ -48,4 +48,13 @@ class DemoControllerTest {
         controller.toggleUiRecordBadge()
         assertEquals("REC", controller.uiBadge())
     }
+
+    @Test
+    fun `未启动预览时录像被阻止`() {
+        val controller = DemoController(SuperCamera(), BasicCameraView())
+        controller.onPermissionResult(cameraGranted = true, micGranted = true)
+
+        assertFalse(controller.toggleRecord("/tmp/v.mp4"))
+        assertEquals("请先启动预览", controller.lastMessage)
+    }
 }
