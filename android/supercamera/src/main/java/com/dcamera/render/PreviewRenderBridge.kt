@@ -1,6 +1,8 @@
 package com.dcamera.render
 
-class PreviewRenderBridge : PreviewBridgePort {
+class PreviewRenderBridge(
+    private val renderPipeline: RenderPipelinePort = NoOpRenderPipelinePort(),
+) : PreviewBridgePort {
     private var surfaceAttached: Boolean = false
     private var frameCounter: Long = 0
 
@@ -17,8 +19,8 @@ class PreviewRenderBridge : PreviewBridgePort {
 
     fun submitFrame(frameHandle: Long, tsNs: Long): Boolean {
         if (!surfaceAttached || frameHandle == 0L || tsNs < 0) return false
+        if (!renderPipeline.submitFrame(frameHandle, tsNs)) return false
         frameCounter++
-        // TODO: real implementation forwards the frame to native render pipeline.
         return true
     }
 
