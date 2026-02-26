@@ -1,17 +1,17 @@
 package com.dcamera.render
 
-class PreviewRenderBridge {
+class PreviewRenderBridge : PreviewBridgePort {
     private var surfaceAttached: Boolean = false
     private var frameCounter: Long = 0
 
-    fun attachSurface(surfaceHandle: Long): Boolean {
+    override fun attachSurface(surfaceHandle: Long): Boolean {
         if (surfaceHandle == 0L) return false
         surfaceAttached = true
         frameCounter = 0
         return true
     }
 
-    fun detachSurface() {
+    override fun detachSurface() {
         surfaceAttached = false
     }
 
