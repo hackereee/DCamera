@@ -42,4 +42,54 @@ final class DemoViewModel: ObservableObject {
             }
         }
     }
+
+    func startPreview() -> Bool {
+        guard permissionsGranted else {
+            lastMessage = "请在系统设置开启权限"
+            return false
+        }
+        let ok = camera.startPreview(surfaceHandle: 1)
+        previewing = ok
+        lastMessage = ok ? "预览已启动" : "预览启动失败"
+        return ok
+    }
+
+    func takePhoto(path: String) -> Bool {
+        guard permissionsGranted else {
+            lastMessage = "请在系统设置开启权限"
+            return false
+        }
+        let result = camera.takePhoto(outputPath: path)
+        let ok = !result.path.isEmpty
+        lastMessage = ok ? "拍照成功" : "拍照失败"
+        return ok
+    }
+
+    func toggleRecord(path: String) -> Bool {
+        guard permissionsGranted else {
+            lastMessage = "请在系统设置开启权限"
+            return false
+        }
+        guard previewing else {
+            lastMessage = "请先启动预览"
+            return false
+        }
+        if !recording {
+            let ok = camera.startRecord(path: path)
+            recording = ok
+            lastMessage = ok ? "开始录像" : "开始录像失败"
+            return ok
+        } else {
+            let result = camera.stopRecord()
+            let ok = !result.path.isEmpty
+            recording = false
+            lastMessage = ok ? "停止录像" : "停止录像失败"
+            return ok
+        }
+    }
+
+    func toggleUiBadge() {
+        ui.onRecordTapped()
+        uiBadge = ui.recordingBadgeText()
+    }
 }

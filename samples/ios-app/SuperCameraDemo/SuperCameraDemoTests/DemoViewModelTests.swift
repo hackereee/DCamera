@@ -26,4 +26,19 @@ final class DemoViewModelTests: XCTestCase {
         XCTAssertEqual(vm.lastMessage, "请在系统设置开启权限")
         XCTAssertFalse(vm.permissionsGranted)
     }
+
+    func test授权后可预览拍照录像并更新ui标记() {
+        let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: true, micGranted: true))
+        vm.requestInitialPermissions()
+
+        XCTAssertTrue(vm.permissionsGranted)
+        XCTAssertTrue(vm.startPreview())
+        XCTAssertTrue(vm.takePhoto(path: "/tmp/p.jpg"))
+        XCTAssertTrue(vm.toggleRecord(path: "/tmp/v.mp4"))
+        XCTAssertTrue(vm.toggleRecord(path: "/tmp/v.mp4"))
+
+        XCTAssertEqual(vm.uiBadge, "")
+        vm.toggleUiBadge()
+        XCTAssertEqual(vm.uiBadge, "REC")
+    }
 }
