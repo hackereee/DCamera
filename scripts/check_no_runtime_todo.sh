@@ -11,8 +11,8 @@ else
   )
 fi
 
-if rg -n "TODO: real implementation" "${TARGETS[@]}"; then
-  echo "FAIL: unresolved runtime TODO found"
+if rg -n -i --pcre2 "\\bTODO\\b" "${TARGETS[@]}"; then
+  echo "FAIL: unresolved runtime TODO marker found"
   exit 1
 fi
 
