@@ -24,4 +24,11 @@ public final class PreviewRenderBridge: PreviewBridgePort {
         frameCount += 1
         return true
     }
+
+    @discardableResult
+    public func submitFrame(frame: PreviewFrame) -> Bool {
+        guard surfaceAttached, frame.width > 0, frame.height > 0, frame.timestampNs >= 0 else { return false }
+        frameCount += 1
+        return true
+    }
 }

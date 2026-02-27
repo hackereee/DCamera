@@ -12,6 +12,8 @@ final class FakePreviewSessionPort: PreviewSessionPort {
         self.stopResult = stopResult
     }
 
+    func setFrameConsumer(_ consumer: @escaping (PreviewFrame) -> Void) {}
+
     func startPreview(surfaceHandle: UInt64) -> Bool {
         startCalls += 1
         return startResult
@@ -27,6 +29,7 @@ final class FakePreviewBridgePort: PreviewBridgePort {
     var attachResult: Bool
     var attachCalls = 0
     var detachCalls = 0
+    var submitFrameCalls = 0
 
     init(attachResult: Bool = true) {
         self.attachResult = attachResult
@@ -39,6 +42,11 @@ final class FakePreviewBridgePort: PreviewBridgePort {
 
     func detach() {
         detachCalls += 1
+    }
+
+    func submitFrame(frame: PreviewFrame) -> Bool {
+        submitFrameCalls += 1
+        return true
     }
 }
 
