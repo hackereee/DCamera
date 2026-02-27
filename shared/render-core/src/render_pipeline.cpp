@@ -22,8 +22,9 @@ bool RenderPipeline::configureOffscreen(int width, int height) {
 bool RenderPipeline::submitFrame(void* yuvFrameHandle, long long timestampNs) {
     if (released_ || !previewConfigured_ || yuvFrameHandle == nullptr || timestampNs < 0)
         return false;
-    if (static_cast<int>(frameQueue_.size()) >= kMaxQueueSize)
-        return false;
+    if (static_cast<int>(frameQueue_.size()) >= kMaxQueueSize) {
+        frameQueue_.pop_front(); // 丢弃最旧帧，确保低延迟预览
+    }
 
     QueuedFrame qf;
     // MVP: 复制 1 字节作为占位，真实实现会复制完整 YUV 缓冲

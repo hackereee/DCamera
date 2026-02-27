@@ -1,3 +1,7 @@
+cmake_minimum_required(VERSION 3.14)
+project(render-core-tests CXX)
+enable_testing()
+
 add_executable(test_build_smoke tests/test_build_smoke.cpp)
 add_test(NAME test_build_smoke COMMAND test_build_smoke)
 
