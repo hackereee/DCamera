@@ -33,8 +33,9 @@ cd "$REPO_ROOT/samples/ios-app/SuperCameraDemo"
 swift test
 echo "✓ iOS demo tests passed"
 
-echo "=== [8/8] Sample README Checks ==="
+echo "=== [8/8] Sample README + Checklist Checks ==="
 bash "$REPO_ROOT/scripts/tests/test_sample_readme_has_manual_checklist.sh"
+bash "$REPO_ROOT/scripts/tests/test_preview_stop_checklist.sh"
 
 echo ""
 echo "PASS: MVP 验证基线通过"

@@ -12,6 +12,7 @@
 ### Android
 
 - [ ] 预览画面正常显示（bgfx 渲染）
+- [ ] 预览停止后可恢复（Start Preview -> Stop Preview -> Start Preview）
 - [ ] 拍照保存 JPEG 至指定路径
 - [ ] 录像保存 MP4 至指定路径
 - [ ] 模式切换（纯预览 / 分析 / 拍照 / 录像）无崩溃
@@ -20,6 +21,7 @@
 ### iOS
 
 - [ ] 预览画面正常显示（bgfx 渲染）
+- [ ] 预览停止后可恢复（Start Preview -> Stop Preview -> Start Preview）
 - [ ] 拍照保存至指定路径
 - [ ] 录像保存 MP4 至指定路径
 - [ ] 模式切换无崩溃

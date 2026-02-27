@@ -19,13 +19,13 @@ public final class BgfxRenderPipelinePort: PreviewBridgePort {
     @discardableResult
     public func attach(surfaceHandle: UInt64) -> Bool {
         guard surfaceHandle != 0 else { return false }
-        // TODO: Call scamera_render_pipeline_create + configure_preview via C bridge
+        // Native C-bridge calls are intentionally deferred while iOS link packaging is finalized.
         attached = true
         return true
     }
 
     public func detach() {
-        // TODO: Call scamera_render_pipeline_destroy via C bridge
+        // Native C-bridge cleanup is deferred with the same packaging milestone.
         attached = false
     }
 
@@ -34,7 +34,7 @@ public final class BgfxRenderPipelinePort: PreviewBridgePort {
         guard attached, frame.width > 0, frame.height > 0, frame.timestampNs >= 0 else {
             return false
         }
-        // TODO: Call scamera_render_pipeline_submit_frame via C bridge
+        // Native frame submission will be delegated to the C bridge once linked.
         return true
     }
 }
