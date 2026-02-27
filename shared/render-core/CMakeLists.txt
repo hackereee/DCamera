@@ -24,3 +24,13 @@ add_test(NAME test_render_pipeline COMMAND test_render_pipeline)
 add_executable(test_metrics_contract tests/test_metrics_contract.cpp)
 target_include_directories(test_metrics_contract PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_test(NAME test_metrics_contract COMMAND test_metrics_contract)
+
+add_library(scamera_render_core STATIC
+    src/render_pipeline.cpp
+    src/render_pipeline_c.cpp
+)
+target_include_directories(scamera_render_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+add_executable(test_render_pipeline_c tests/test_render_pipeline_c.cpp)
+target_link_libraries(test_render_pipeline_c PRIVATE scamera_render_core)
+add_test(NAME test_render_pipeline_c COMMAND test_render_pipeline_c)
