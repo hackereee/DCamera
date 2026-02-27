@@ -17,7 +17,7 @@ class PreviewRenderBridge(
         surfaceAttached = false
     }
 
-    fun submitFrame(frame: PreviewFrame): Boolean {
+    override fun submitFrame(frame: PreviewFrame): Boolean {
         if (!surfaceAttached) return false
         if (frame.width <= 0 || frame.height <= 0) return false
         if (frame.timestampNs < 0) return false

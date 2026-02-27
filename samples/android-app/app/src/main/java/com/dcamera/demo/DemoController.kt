@@ -37,6 +37,13 @@ class DemoController(
         return ok
     }
 
+    fun stopPreview(): Boolean {
+        val ok = camera.stopPreview()
+        previewing = false
+        lastMessage = if (ok) "预览已停止" else "预览停止失败"
+        return ok
+    }
+
     fun takePhoto(path: String): String {
         if (!cameraGranted) {
             lastMessage = "权限未授予"

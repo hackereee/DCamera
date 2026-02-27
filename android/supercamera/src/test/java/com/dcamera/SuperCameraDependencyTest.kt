@@ -45,6 +45,8 @@ private class FakePreviewBridgePort(
     override fun detachSurface() {
         detachCalls++
     }
+
+    override fun submitFrame(frame: PreviewFrame): Boolean = true
 }
 
 private class FakePhotoCapturePort(

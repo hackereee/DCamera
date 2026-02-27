@@ -57,4 +57,13 @@ class DemoControllerTest {
         assertFalse(controller.toggleRecord("/tmp/v.mp4"))
         assertEquals("请先启动预览", controller.lastMessage)
     }
+
+    @Test
+    fun `预览启动后可停止并回到idle提示`() {
+        val controller = DemoController(SuperCamera(), BasicCameraView())
+        controller.onPermissionResult(cameraGranted = true, micGranted = true)
+        assertTrue(controller.startPreview(1L))
+        assertTrue(controller.stopPreview())
+        assertEquals("预览已停止", controller.lastMessage)
+    }
 }

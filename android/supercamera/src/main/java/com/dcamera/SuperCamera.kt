@@ -50,6 +50,7 @@ class SuperCamera(
             return false
         }
         state = CameraState.INITIALIZING
+        previewSession.setFrameConsumer { previewBridge.submitFrame(it) }
         if (!previewSession.startPreview(surfaceHandle)) {
             state = CameraState.IDLE
             errorCallback?.onError(ErrorCode.SESSION_CONFIG_FAILED, "preview session init failed")

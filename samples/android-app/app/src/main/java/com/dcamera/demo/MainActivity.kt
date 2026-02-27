@@ -35,6 +35,11 @@ class MainActivity : AppCompatActivity() {
             refreshResult()
         }
 
+        findViewById<Button>(R.id.btnStopPreview).setOnClickListener {
+            controller.stopPreview()
+            refreshResult()
+        }
+
         findViewById<Button>(R.id.btnPhoto).setOnClickListener {
             controller.takePhoto("/tmp/demo_photo.jpg")
             refreshResult()
