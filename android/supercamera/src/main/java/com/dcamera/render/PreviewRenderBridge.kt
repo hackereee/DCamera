@@ -17,9 +17,11 @@ class PreviewRenderBridge(
         surfaceAttached = false
     }
 
-    fun submitFrame(frameHandle: Long, tsNs: Long): Boolean {
-        if (!surfaceAttached || frameHandle == 0L || tsNs < 0) return false
-        if (!renderPipeline.submitFrame(frameHandle, tsNs)) return false
+    fun submitFrame(frame: PreviewFrame): Boolean {
+        if (!surfaceAttached) return false
+        if (frame.width <= 0 || frame.height <= 0) return false
+        if (frame.timestampNs < 0) return false
+        if (!renderPipeline.submitFrame(frame)) return false
         frameCounter++
         return true
     }

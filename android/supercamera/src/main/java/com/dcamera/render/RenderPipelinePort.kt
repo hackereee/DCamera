@@ -1,9 +1,9 @@
 package com.dcamera.render
 
 interface RenderPipelinePort {
-    fun submitFrame(frameHandle: Long, tsNs: Long): Boolean
+    fun submitFrame(frame: PreviewFrame): Boolean
 }
 
 class NoOpRenderPipelinePort : RenderPipelinePort {
-    override fun submitFrame(frameHandle: Long, tsNs: Long): Boolean = true
+    override fun submitFrame(frame: PreviewFrame): Boolean = true
 }
