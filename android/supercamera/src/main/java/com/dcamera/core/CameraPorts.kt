@@ -2,8 +2,10 @@ package com.dcamera.core
 
 import com.dcamera.capture.CaptureController
 import com.dcamera.capture.CaptureResult
+import com.dcamera.render.PreviewFrame
 
 interface PreviewSessionPort {
+    fun setFrameConsumer(consumer: (PreviewFrame) -> Unit)
     fun startPreview(surfaceHandle: Long): Boolean
     fun stopPreview(): Boolean
 }
@@ -13,6 +15,7 @@ interface PhotoCapturePort {
 }
 
 class NoOpPreviewSessionPort : PreviewSessionPort {
+    override fun setFrameConsumer(consumer: (PreviewFrame) -> Unit) {}
     override fun startPreview(surfaceHandle: Long): Boolean = surfaceHandle != 0L
     override fun stopPreview(): Boolean = true
 }

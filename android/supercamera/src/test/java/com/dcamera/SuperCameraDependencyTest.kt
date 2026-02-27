@@ -5,6 +5,7 @@ import com.dcamera.core.ErrorCallback
 import com.dcamera.core.PhotoCapturePort
 import com.dcamera.core.PreviewSessionPort
 import com.dcamera.render.PreviewBridgePort
+import com.dcamera.render.PreviewFrame
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -16,6 +17,8 @@ private class FakePreviewSessionPort(
 ) : PreviewSessionPort {
     var startCalls = 0
     var stopCalls = 0
+
+    override fun setFrameConsumer(consumer: (PreviewFrame) -> Unit) {}
 
     override fun startPreview(surfaceHandle: Long): Boolean {
         startCalls++
