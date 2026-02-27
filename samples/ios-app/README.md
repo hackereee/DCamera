@@ -21,5 +21,7 @@ camera.setWorkMode(.video)
 1. 首次进入确认相机/麦克风权限弹窗出现。
 2. 允许后点击 `Start Preview`，页面提示"预览已启动"。
 3. 点击 `Take Photo`，提示"拍照成功"。
-4. 点击 `Start/Stop Record` 两次，提示开始/停止录像。
-5. 点击 `Toggle UI Badge`，页面显示 `UI Badge: REC`。
+4. 点击 `Stop Preview`，页面提示"预览已停止"，确认预览画面已停止。
+5. 再次点击 `Start Preview`，页面提示"预览已启动"，确认预览画面恢复。
+6. 点击 `Start/Stop Record` 两次，提示开始/停止录像。
+7. 点击 `Toggle UI Badge`，页面显示 `UI Badge: REC`。

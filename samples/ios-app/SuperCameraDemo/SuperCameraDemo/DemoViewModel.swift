@@ -54,6 +54,14 @@ final class DemoViewModel: ObservableObject {
         return ok
     }
 
+    @discardableResult
+    func stopPreview() -> Bool {
+        let ok = camera.stopPreview()
+        previewing = false
+        lastMessage = ok ? "预览已停止" : "预览停止失败"
+        return ok
+    }
+
     func takePhoto(path: String) -> Bool {
         guard permissionsGranted else {
             lastMessage = "请在系统设置开启权限"

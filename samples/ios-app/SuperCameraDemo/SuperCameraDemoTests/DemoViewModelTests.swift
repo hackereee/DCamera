@@ -41,4 +41,12 @@ final class DemoViewModelTests: XCTestCase {
         vm.toggleUiBadge()
         XCTAssertEqual(vm.uiBadge, "REC")
     }
+
+    func test预览启动后可停止并提示已停止() {
+        let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: true, micGranted: true))
+        vm.requestInitialPermissions()
+        XCTAssertTrue(vm.startPreview())
+        XCTAssertTrue(vm.stopPreview())
+        XCTAssertEqual(vm.lastMessage, "预览已停止")
+    }
 }

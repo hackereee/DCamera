@@ -1,0 +1,16 @@
+// RenderPipelineCBridge.modulemap
+// Clang module map that wraps the C bridge header for Swift import.
+//
+// Usage (once the native library is linked):
+//   import RenderPipelineCBridge
+//
+// This module is NOT yet wired into the SwiftPM build graph because
+// the native static library (libscamera_render_core.a) has not been
+// cross-compiled for iOS arm64. When that library is available, add a
+// .systemLibrary or .target(… publicHeadersPath:) entry in Package.swift
+// and point it at this modulemap.
+
+module RenderPipelineCBridge {
+    header "RenderPipelineCBridge.h"
+    export *
+}

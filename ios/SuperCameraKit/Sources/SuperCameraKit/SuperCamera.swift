@@ -49,6 +49,9 @@ public final class SuperCamera {
             return false
         }
         state = .initializing
+        previewSession.setFrameConsumer { [weak self] frame in
+            _ = self?.previewBridge.submitFrame(frame: frame)
+        }
         guard previewSession.startPreview(surfaceHandle: surfaceHandle) else {
             state = .idle
             errorCallback?(.sessionConfigFailed, "preview session init failed")
