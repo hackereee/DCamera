@@ -1,6 +1,9 @@
 import Foundation
 import SuperCameraKit
 import SuperCameraUI
+#if canImport(AVFoundation)
+import AVFoundation
+#endif
 
 protocol PermissionService {
     func requestCameraPermission(completion: @escaping (Bool) -> Void)
@@ -9,13 +12,23 @@ protocol PermissionService {
 
 final class DefaultPermissionService: PermissionService {
     func requestCameraPermission(completion: @escaping (Bool) -> Void) {
-        // In real app: AVCaptureDevice.requestAccess(for: .video, completionHandler: completion)
+        #if canImport(AVFoundation)
+        AVCaptureDevice.requestAccess(for: .video) { granted in
+            DispatchQueue.main.async { completion(granted) }
+        }
+        #else
         completion(false)
+        #endif
     }
 
     func requestMicrophonePermission(completion: @escaping (Bool) -> Void) {
-        // In real app: AVCaptureDevice.requestAccess(for: .audio, completionHandler: completion)
+        #if canImport(AVFoundation)
+        AVCaptureDevice.requestAccess(for: .audio) { granted in
+            DispatchQueue.main.async { completion(granted) }
+        }
+        #else
         completion(false)
+        #endif
     }
 }
 
