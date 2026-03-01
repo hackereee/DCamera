@@ -37,6 +37,31 @@ public final class SuperCamera {
         self.photoCapture = photoCapture
     }
 
+    public static func makeLiveIOS(
+        previewSession: PreviewSessionPort,
+        previewBridge: PreviewBridgePort = PreviewRenderBridge(),
+        photoCapture: PhotoCapturePort = CaptureControllerAdapter()
+    ) -> SuperCamera {
+        SuperCamera(
+            previewSession: previewSession,
+            previewBridge: previewBridge,
+            photoCapture: photoCapture
+        )
+    }
+
+    #if canImport(AVFoundation) && canImport(UIKit)
+    public static func makeLiveIOS(
+        previewBridge: PreviewBridgePort = PreviewRenderBridge(),
+        photoCapture: PhotoCapturePort = CaptureControllerAdapter()
+    ) -> SuperCamera {
+        SuperCamera(
+            previewSession: AVPreviewSessionPort(facade: LiveAVFoundationSessionFacade()),
+            previewBridge: previewBridge,
+            photoCapture: photoCapture
+        )
+    }
+    #endif
+
     public func setWorkMode(_ mode: WorkMode) { self.mode = mode }
     public func currentWorkMode() -> WorkMode { mode }
     public func currentState() -> CameraState { state }

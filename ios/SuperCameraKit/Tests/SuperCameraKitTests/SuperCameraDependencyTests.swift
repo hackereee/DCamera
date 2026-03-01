@@ -108,4 +108,18 @@ final class SuperCameraDependencyTests: XCTestCase {
         XCTAssertEqual(code, .fileIOFailed)
         XCTAssertEqual(camera.currentState(), .previewing)
     }
+
+    func testLiveIOS工厂使用注入依赖() {
+        let session = FakePreviewSessionPort()
+        let bridge = FakePreviewBridgePort()
+        let camera = SuperCamera.makeLiveIOS(
+            previewSession: session,
+            previewBridge: bridge,
+            photoCapture: FakePhotoCapturePort(resultPath: "/tmp/p.jpg")
+        )
+
+        XCTAssertTrue(camera.startPreview(surfaceHandle: 1))
+        XCTAssertEqual(session.startCalls, 1)
+        XCTAssertEqual(bridge.attachCalls, 1)
+    }
 }

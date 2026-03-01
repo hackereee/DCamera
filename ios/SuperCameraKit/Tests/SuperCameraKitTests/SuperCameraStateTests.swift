@@ -51,6 +51,14 @@ final class SuperCameraStateTests: XCTestCase {
         XCTAssertTrue(result.path.hasSuffix(".mp4"))
     }
 
+    func test录制中停止预览失败且状态保持录制中() {
+        let camera = SuperCamera()
+        XCTAssertTrue(camera.startPreview(surfaceHandle: 1))
+        XCTAssertTrue(camera.startRecord(path: "/tmp/out.mp4"))
+        XCTAssertFalse(camera.stopPreview())
+        XCTAssertEqual(camera.currentState(), .recording)
+    }
+
     func testTakePhoto回到PREVIEWING() {
         let camera = SuperCamera()
         camera.startPreview(surfaceHandle: 1)
