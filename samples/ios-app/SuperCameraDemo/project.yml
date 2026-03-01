@@ -1,0 +1,38 @@
+name: SuperCameraDemo
+options:
+  bundleIdPrefix: com.dcamera.demo
+  deploymentTarget:
+    iOS: "16.0"
+
+packages:
+  SuperCameraKit:
+    path: ../../../ios/SuperCameraKit
+  SuperCameraUI:
+    path: ../../../ios/SuperCameraUI
+
+targets:
+  SuperCameraDemo:
+    type: application
+    platform: iOS
+    sources:
+      - SuperCameraDemo
+    settings:
+      base:
+        SWIFT_VERSION: "5.9"
+        INFOPLIST_FILE: SuperCameraDemo/Info.plist
+        GENERATE_INFOPLIST_FILE: false
+    dependencies:
+      - package: SuperCameraKit
+      - package: SuperCameraUI
+
+  SuperCameraDemoTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - SuperCameraDemoTests
+    settings:
+      base:
+        SWIFT_VERSION: "5.9"
+        GENERATE_INFOPLIST_FILE: true
+    dependencies:
+      - target: SuperCameraDemo

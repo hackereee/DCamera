@@ -49,4 +49,37 @@ final class DemoViewModelTests: XCTestCase {
         XCTAssertTrue(vm.stopPreview())
         XCTAssertEqual(vm.lastMessage, "预览已停止")
     }
+
+    // MARK: - Android-parity tests
+
+    func test未授权时预览被阻止() {
+        let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: false, micGranted: false))
+        vm.requestInitialPermissions()
+        XCTAssertFalse(vm.startPreview())
+        XCTAssertEqual(vm.lastMessage, "请在系统设置开启权限")
+    }
+
+    func test未授权时拍照被阻止() {
+        let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: false, micGranted: false))
+        vm.requestInitialPermissions()
+        XCTAssertFalse(vm.takePhoto(path: "/tmp/p.jpg"))
+        XCTAssertEqual(vm.lastMessage, "请在系统设置开启权限")
+    }
+
+    func test未启动预览时录像被阻止() {
+        let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: true, micGranted: true))
+        vm.requestInitialPermissions()
+        XCTAssertFalse(vm.toggleRecord(path: "/tmp/v.mp4"))
+        XCTAssertEqual(vm.lastMessage, "请先启动预览")
+    }
+
+    func testViewModelPublishedPropertiesExist() {
+        let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: false, micGranted: false))
+        // Verify all @Published properties are accessible
+        XCTAssertFalse(vm.permissionsGranted)
+        XCTAssertFalse(vm.previewing)
+        XCTAssertFalse(vm.recording)
+        XCTAssertEqual(vm.lastMessage, "")
+        XCTAssertEqual(vm.uiBadge, "")
+    }
 }

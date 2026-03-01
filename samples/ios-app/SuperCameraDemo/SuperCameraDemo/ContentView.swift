@@ -1,15 +1,53 @@
-import Foundation
+import SwiftUI
 
-/// Describes the content view structure for the iOS demo.
-/// In a real Xcode project, this would be a SwiftUI View.
-/// For SPM library builds, this serves as documentation.
-struct ContentView {
-    static let description = """
-    SuperCamera Demo UI:
-    - Preview Placeholder
-    - [Start Preview] [Take Photo]
-    - [Start/Stop Record] [Toggle UI Badge]
-    - UI Badge: {badge}
-    - {lastMessage}
-    """
+struct ContentView: View {
+    @StateObject private var vm = DemoViewModel()
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("SuperCamera Demo")
+                .font(.title)
+
+            Rectangle()
+                .fill(Color.gray.opacity(0.3))
+                .frame(height: 300)
+                .overlay(Text("Preview Placeholder").foregroundColor(.secondary))
+
+            HStack(spacing: 16) {
+                Button(vm.previewing ? "Stop Preview" : "Start Preview") {
+                    if vm.previewing {
+                        vm.stopPreview()
+                    } else {
+                        _ = vm.startPreview()
+                    }
+                }
+                Button("Take Photo") {
+                    _ = vm.takePhoto(path: NSTemporaryDirectory() + "photo.jpg")
+                }
+            }
+
+            HStack(spacing: 16) {
+                Button(vm.recording ? "Stop Record" : "Start Record") {
+                    _ = vm.toggleRecord(path: NSTemporaryDirectory() + "video.mp4")
+                }
+                Button("Toggle UI Badge") {
+                    vm.toggleUiBadge()
+                }
+            }
+
+            if !vm.uiBadge.isEmpty {
+                Text("UI Badge: \(vm.uiBadge)")
+                    .foregroundColor(.red)
+                    .font(.headline)
+            }
+
+            Text(vm.lastMessage)
+                .foregroundColor(.secondary)
+                .font(.subheadline)
+        }
+        .padding()
+        .onAppear {
+            vm.requestInitialPermissions()
+        }
+    }
 }

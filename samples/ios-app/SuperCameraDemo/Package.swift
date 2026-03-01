@@ -15,7 +15,8 @@ let package = Package(
                 .product(name: "SuperCameraKit", package: "SuperCameraKit"),
                 .product(name: "SuperCameraUI", package: "SuperCameraUI"),
             ],
-            path: "SuperCameraDemo"
+            path: "SuperCameraDemo",
+            exclude: ["SuperCameraDemoApp.swift", "ContentView.swift", "Info.plist"]
         ),
         .testTarget(
             name: "SuperCameraDemoTests",

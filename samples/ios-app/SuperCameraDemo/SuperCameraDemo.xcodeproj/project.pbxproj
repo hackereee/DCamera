@@ -1,0 +1,450 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3AF94BF15CA15D9E0ED1E4AB /* SuperCameraKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4E89CF83088B5DE84DAD96EC /* SuperCameraKit */; };
+		4EE29ECAEDB23D7AD8E8750E /* DemoViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB700926343D83022123727 /* DemoViewModelTests.swift */; };
+		7B2FFF8DADCF8BF5747DFA0E /* SuperCameraDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA2152266222D2244EE2233 /* SuperCameraDemoApp.swift */; };
+		85CBA73789404D5BB7D02B54 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88263B8C74310462C1D0EA8 /* ContentView.swift */; };
+		C227EC6E14F320C4A7889EA7 /* SuperCameraUI in Frameworks */ = {isa = PBXBuildFile; productRef = 892B15DAACFD6AEDBF330132 /* SuperCameraUI */; };
+		E2690C92867DCCAEC5F12BC9 /* DemoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D1A0AA7E459DCD56772454 /* DemoViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		113BCBB83924BAF4404B89AF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0F768E35F2AFFF7DD4132F4E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5B77D4EEB5DFF66490DD58E9;
+			remoteInfo = SuperCameraDemo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0632C899AE150585E72CFAAD /* SuperCameraDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SuperCameraDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		06D1A0AA7E459DCD56772454 /* DemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoViewModel.swift; sourceTree = "<group>"; };
+		3FB700926343D83022123727 /* DemoViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoViewModelTests.swift; sourceTree = "<group>"; };
+		6BA1DDE6EF5A2FDE5A111FEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6E922D1AC4E68B801D422BB2 /* SuperCameraUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SuperCameraUI; path = ../../../ios/SuperCameraUI; sourceTree = SOURCE_ROOT; };
+		867F14D3A45C2EDD1E5988B8 /* SuperCameraDemoTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SuperCameraDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FA2152266222D2244EE2233 /* SuperCameraDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuperCameraDemoApp.swift; sourceTree = "<group>"; };
+		C88263B8C74310462C1D0EA8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		EAADFD36115897197F8334FC /* SuperCameraKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SuperCameraKit; path = ../../../ios/SuperCameraKit; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		ACA8AA4DBE19C04FFBF428CB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3AF94BF15CA15D9E0ED1E4AB /* SuperCameraKit in Frameworks */,
+				C227EC6E14F320C4A7889EA7 /* SuperCameraUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		047FB5DCF6191FD704E735FF /* SuperCameraDemoTests */ = {
+			isa = PBXGroup;
+			children = (
+				3FB700926343D83022123727 /* DemoViewModelTests.swift */,
+			);
+			path = SuperCameraDemoTests;
+			sourceTree = "<group>";
+		};
+		0F0CE992C5924D806604EAAD /* SuperCameraDemo */ = {
+			isa = PBXGroup;
+			children = (
+				C88263B8C74310462C1D0EA8 /* ContentView.swift */,
+				06D1A0AA7E459DCD56772454 /* DemoViewModel.swift */,
+				6BA1DDE6EF5A2FDE5A111FEA /* Info.plist */,
+				8FA2152266222D2244EE2233 /* SuperCameraDemoApp.swift */,
+			);
+			path = SuperCameraDemo;
+			sourceTree = "<group>";
+		};
+		4A52B11BC99A17A0ECC46D98 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				EAADFD36115897197F8334FC /* SuperCameraKit */,
+				6E922D1AC4E68B801D422BB2 /* SuperCameraUI */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		4B4C7C80AAACC4E3B24A3408 = {
+			isa = PBXGroup;
+			children = (
+				4A52B11BC99A17A0ECC46D98 /* Packages */,
+				0F0CE992C5924D806604EAAD /* SuperCameraDemo */,
+				047FB5DCF6191FD704E735FF /* SuperCameraDemoTests */,
+				6C52565646119B26A6D7A348 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6C52565646119B26A6D7A348 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0632C899AE150585E72CFAAD /* SuperCameraDemo.app */,
+				867F14D3A45C2EDD1E5988B8 /* SuperCameraDemoTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5B77D4EEB5DFF66490DD58E9 /* SuperCameraDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7CBF4E5147E3AF8D9E1839EF /* Build configuration list for PBXNativeTarget "SuperCameraDemo" */;
+			buildPhases = (
+				0671828E5BB1E17E10FEEAAF /* Sources */,
+				ACA8AA4DBE19C04FFBF428CB /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SuperCameraDemo;
+			packageProductDependencies = (
+				4E89CF83088B5DE84DAD96EC /* SuperCameraKit */,
+				892B15DAACFD6AEDBF330132 /* SuperCameraUI */,
+			);
+			productName = SuperCameraDemo;
+			productReference = 0632C899AE150585E72CFAAD /* SuperCameraDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E08BA8A54AD20FBC1D258872 /* SuperCameraDemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCFD7CC4356ACEFA92C0F2DA /* Build configuration list for PBXNativeTarget "SuperCameraDemoTests" */;
+			buildPhases = (
+				CACF1B17F9428E197CFCB89F /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				23AB84DCB65465D3E0170449 /* PBXTargetDependency */,
+			);
+			name = SuperCameraDemoTests;
+			packageProductDependencies = (
+			);
+			productName = SuperCameraDemoTests;
+			productReference = 867F14D3A45C2EDD1E5988B8 /* SuperCameraDemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0F768E35F2AFFF7DD4132F4E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+			};
+			buildConfigurationList = C4687972B7A7471600AE82F4 /* Build configuration list for PBXProject "SuperCameraDemo" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 4B4C7C80AAACC4E3B24A3408;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				54D60A0BE15B972FFF954763 /* XCLocalSwiftPackageReference "../../../ios/SuperCameraKit" */,
+				81433782A00BF45F9A2F821B /* XCLocalSwiftPackageReference "../../../ios/SuperCameraUI" */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5B77D4EEB5DFF66490DD58E9 /* SuperCameraDemo */,
+				E08BA8A54AD20FBC1D258872 /* SuperCameraDemoTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0671828E5BB1E17E10FEEAAF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				85CBA73789404D5BB7D02B54 /* ContentView.swift in Sources */,
+				E2690C92867DCCAEC5F12BC9 /* DemoViewModel.swift in Sources */,
+				7B2FFF8DADCF8BF5747DFA0E /* SuperCameraDemoApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACF1B17F9428E197CFCB89F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4EE29ECAEDB23D7AD8E8750E /* DemoViewModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		23AB84DCB65465D3E0170449 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5B77D4EEB5DFF66490DD58E9 /* SuperCameraDemo */;
+			targetProxy = 113BCBB83924BAF4404B89AF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		11A6C37DE761AEBAE5227240 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dcamera.demo.SuperCameraDemoTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SuperCameraDemo.app/SuperCameraDemo";
+			};
+			name = Debug;
+		};
+		18C38C4FF870EAE4734B3514 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		8B99EB2D5C3F9C41CCBEFDD5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A9F4A664FC16B06CFDAD36B0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dcamera.demo.SuperCameraDemoTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SuperCameraDemo.app/SuperCameraDemo";
+			};
+			name = Release;
+		};
+		AC41017C66ECADA71188926B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SuperCameraDemo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dcamera.demo.SuperCameraDemo;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E48D3C4A97B23E52E706FCC1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SuperCameraDemo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dcamera.demo.SuperCameraDemo;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7CBF4E5147E3AF8D9E1839EF /* Build configuration list for PBXNativeTarget "SuperCameraDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E48D3C4A97B23E52E706FCC1 /* Debug */,
+				AC41017C66ECADA71188926B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BCFD7CC4356ACEFA92C0F2DA /* Build configuration list for PBXNativeTarget "SuperCameraDemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				11A6C37DE761AEBAE5227240 /* Debug */,
+				A9F4A664FC16B06CFDAD36B0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C4687972B7A7471600AE82F4 /* Build configuration list for PBXProject "SuperCameraDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18C38C4FF870EAE4734B3514 /* Debug */,
+				8B99EB2D5C3F9C41CCBEFDD5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		54D60A0BE15B972FFF954763 /* XCLocalSwiftPackageReference "../../../ios/SuperCameraKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../ios/SuperCameraKit;
+		};
+		81433782A00BF45F9A2F821B /* XCLocalSwiftPackageReference "../../../ios/SuperCameraUI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../ios/SuperCameraUI;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4E89CF83088B5DE84DAD96EC /* SuperCameraKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SuperCameraKit;
+		};
+		892B15DAACFD6AEDBF330132 /* SuperCameraUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SuperCameraUI;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 0F768E35F2AFFF7DD4132F4E /* Project object */;
+}
