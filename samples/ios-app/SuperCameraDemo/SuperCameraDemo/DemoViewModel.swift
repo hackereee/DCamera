@@ -44,6 +44,7 @@ final class DemoViewModel: ObservableObject {
     private let camera = SuperCamera()
     private let ui = BasicCameraView()
     private let permissionService: PermissionService
+    private var previewSurfaceHandle: UInt64?
 
     init(permissionService: PermissionService = DefaultPermissionService()) {
         self.permissionService = permissionService
@@ -65,10 +66,18 @@ final class DemoViewModel: ObservableObject {
             lastMessage = "请在系统设置开启权限"
             return false
         }
-        let ok = camera.startPreview(surfaceHandle: 1)
+        guard let handle = previewSurfaceHandle, handle != 0 else {
+            lastMessage = "预览启动失败（渲染目标无效）"
+            return false
+        }
+        let ok = camera.startPreview(surfaceHandle: handle)
         previewing = ok
         lastMessage = ok ? "预览已启动" : "预览启动失败"
         return ok
+    }
+
+    func setPreviewSurfaceHandle(_ handle: UInt64?) {
+        previewSurfaceHandle = handle
     }
 
     @discardableResult

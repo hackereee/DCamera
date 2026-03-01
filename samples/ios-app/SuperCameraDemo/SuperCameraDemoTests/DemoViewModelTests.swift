@@ -30,6 +30,7 @@ final class DemoViewModelTests: XCTestCase {
     func test授权后可预览拍照录像并更新ui标记() {
         let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: true, micGranted: true))
         vm.requestInitialPermissions()
+        vm.setPreviewSurfaceHandle(1)
 
         XCTAssertTrue(vm.permissionsGranted)
         XCTAssertTrue(vm.startPreview())
@@ -45,6 +46,7 @@ final class DemoViewModelTests: XCTestCase {
     func test预览启动后可停止并提示已停止() {
         let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: true, micGranted: true))
         vm.requestInitialPermissions()
+        vm.setPreviewSurfaceHandle(1)
         XCTAssertTrue(vm.startPreview())
         XCTAssertTrue(vm.stopPreview())
         XCTAssertEqual(vm.lastMessage, "预览已停止")
@@ -76,6 +78,7 @@ final class DemoViewModelTests: XCTestCase {
     func test仅相机授权也可启动预览() {
         let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: true, micGranted: false))
         vm.requestInitialPermissions()
+        vm.setPreviewSurfaceHandle(1)
         XCTAssertTrue(vm.startPreview())
         XCTAssertEqual(vm.lastMessage, "预览已启动")
     }
@@ -83,9 +86,17 @@ final class DemoViewModelTests: XCTestCase {
     func test麦克风未授权时录制被阻止并提示() {
         let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: true, micGranted: false))
         vm.requestInitialPermissions()
+        vm.setPreviewSurfaceHandle(1)
         XCTAssertTrue(vm.startPreview())
         XCTAssertFalse(vm.toggleRecord(path: "/tmp/v.mp4"))
         XCTAssertEqual(vm.lastMessage, "请在系统设置开启麦克风权限")
+    }
+
+    func test缺少预览surfaceHandle时启动预览失败() {
+        let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: true, micGranted: true))
+        vm.requestInitialPermissions()
+        XCTAssertFalse(vm.startPreview())
+        XCTAssertEqual(vm.lastMessage, "预览启动失败（渲染目标无效）")
     }
 
     func testViewModelPublishedPropertiesExist() {
