@@ -66,4 +66,25 @@ class DemoControllerTest {
         assertTrue(controller.stopPreview())
         assertEquals("预览已停止", controller.lastMessage)
     }
+
+    @Test
+    fun `预览显示层启动失败时返回失败`() {
+        val controller = DemoController(
+            camera = SuperCamera(),
+            basicCameraView = BasicCameraView(),
+            previewDisplay = FakePreviewDisplayPort(startResult = false, stopResult = true),
+        )
+        controller.onPermissionResult(cameraGranted = true, micGranted = true)
+
+        assertFalse(controller.startPreview(1L))
+        assertEquals("预览启动失败", controller.lastMessage)
+    }
+}
+
+private class FakePreviewDisplayPort(
+    private val startResult: Boolean,
+    private val stopResult: Boolean,
+) : PreviewDisplayPort {
+    override fun startPreview(): Boolean = startResult
+    override fun stopPreview(): Boolean = stopResult
 }

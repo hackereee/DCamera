@@ -6,6 +6,7 @@ import com.dcamera.ui.BasicCameraView
 class DemoController(
     private val camera: SuperCamera,
     private val basicCameraView: BasicCameraView,
+    private val previewDisplay: PreviewDisplayPort = NoOpPreviewDisplayPort(),
 ) {
     var cameraGranted: Boolean = false
         private set
@@ -31,14 +32,24 @@ class DemoController(
             lastMessage = "权限未授予"
             return false
         }
+        if (!previewDisplay.startPreview()) {
+            previewing = false
+            lastMessage = "预览启动失败"
+            return false
+        }
         val ok = camera.startPreview(surfaceHandle)
         previewing = ok
+        if (!ok) {
+            previewDisplay.stopPreview()
+        }
         lastMessage = if (ok) "预览已启动" else "预览启动失败"
         return ok
     }
 
     fun stopPreview(): Boolean {
-        val ok = camera.stopPreview()
+        val displayStopped = previewDisplay.stopPreview()
+        val cameraStopped = camera.stopPreview()
+        val ok = displayStopped && cameraStopped
         previewing = false
         lastMessage = if (ok) "预览已停止" else "预览停止失败"
         return ok

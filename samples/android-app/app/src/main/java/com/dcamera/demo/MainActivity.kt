@@ -4,13 +4,15 @@ import android.Manifest
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.view.TextureView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.dcamera.SuperCamera
 import com.dcamera.ui.BasicCameraView
 
 class MainActivity : AppCompatActivity() {
-    private val controller = DemoController(SuperCamera(), BasicCameraView())
+    private lateinit var controller: DemoController
+    private lateinit var previewDisplay: PreviewDisplayPort
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -24,6 +26,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val previewView = findViewById<TextureView>(R.id.tvPreview)
+        previewDisplay = Camera2TexturePreviewDisplay(this, previewView)
+        controller = DemoController(
+            camera = SuperCamera(),
+            basicCameraView = BasicCameraView(),
+            previewDisplay = previewDisplay,
+        )
 
         permissionLauncher.launch(arrayOf(
             Manifest.permission.CAMERA,
@@ -56,6 +65,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         refreshResult()
+    }
+
+    override fun onDestroy() {
+        previewDisplay.stopPreview()
+        super.onDestroy()
     }
 
     private fun refreshResult() {

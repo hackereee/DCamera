@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -26,7 +26,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0632C899AE150585E72CFAAD /* SuperCameraDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SuperCameraDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0632C899AE150585E72CFAAD /* SuperCameraDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SuperCameraDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06D1A0AA7E459DCD56772454 /* DemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoViewModel.swift; sourceTree = "<group>"; };
 		3FB700926343D83022123727 /* DemoViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoViewModelTests.swift; sourceTree = "<group>"; };
 		6BA1DDE6EF5A2FDE5A111FEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -161,7 +161,6 @@
 				54D60A0BE15B972FFF954763 /* XCLocalSwiftPackageReference "../../../ios/SuperCameraKit" */,
 				81433782A00BF45F9A2F821B /* XCLocalSwiftPackageReference "../../../ios/SuperCameraUI" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -361,6 +360,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = AZ69D9YYYK;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SuperCameraDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -379,6 +379,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = G6LL2Q3Z82;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SuperCameraDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
