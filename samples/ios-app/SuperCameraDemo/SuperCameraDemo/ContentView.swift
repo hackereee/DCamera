@@ -8,10 +8,10 @@ struct ContentView: View {
             Text("SuperCamera Demo")
                 .font(.title)
 
-            Rectangle()
-                .fill(Color.gray.opacity(0.3))
-                .frame(height: 300)
-                .overlay(Text("Preview Placeholder").foregroundColor(.secondary))
+            CameraPreviewContainer { handle in
+                vm.setPreviewSurfaceHandle(handle)
+            }
+            .frame(height: 300)
 
             HStack(spacing: 16) {
                 Button(vm.previewing ? "Stop Preview" : "Start Preview") {

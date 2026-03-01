@@ -41,13 +41,25 @@ final class DemoViewModel: ObservableObject {
     @Published var lastMessage: String = ""
     @Published var uiBadge: String = ""
 
-    private let camera = SuperCamera()
+    private let camera: SuperCamera
     private let ui = BasicCameraView()
     private let permissionService: PermissionService
     private var previewSurfaceHandle: UInt64?
 
-    init(permissionService: PermissionService = DefaultPermissionService()) {
+    init(
+        permissionService: PermissionService = DefaultPermissionService(),
+        camera: SuperCamera? = nil
+    ) {
         self.permissionService = permissionService
+        if let camera {
+            self.camera = camera
+        } else {
+            #if canImport(AVFoundation) && canImport(UIKit)
+            self.camera = SuperCamera.makeLiveIOS()
+            #else
+            self.camera = SuperCamera()
+            #endif
+        }
     }
 
     func requestInitialPermissions() {
