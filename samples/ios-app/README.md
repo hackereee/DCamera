@@ -6,7 +6,7 @@
 
 ### Xcode 工程（推荐）
 
-1. 用 Xcode 打开 `samples/ios-app/SuperCameraDemo/SuperCameraDemo.xcodeproj`
+1. 用 Xcode 打开 `samples/ios-app/SuperCameraDemo/SuperCameraDemo.xcworkspace`（不要直接打开 `.xcodeproj`，否则会与 `Package.swift` 产生包冲突）
 2. 选择 iPhone 模拟器运行（Scheme: `SuperCameraDemo`）
 
 ### 重新生成 Xcode 工程

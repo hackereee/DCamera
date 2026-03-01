@@ -3,4 +3,5 @@
 Package.resolved
 *.xcodeproj/xcuserdata/
 *.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
 DerivedData/

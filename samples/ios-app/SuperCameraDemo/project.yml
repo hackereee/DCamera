@@ -4,11 +4,9 @@ options:
   deploymentTarget:
     iOS: "16.0"
 
-packages:
-  SuperCameraKit:
-    path: ../../../ios/SuperCameraKit
-  SuperCameraUI:
-    path: ../../../ios/SuperCameraUI
+localPackages:
+  - ../../../ios/SuperCameraKit
+  - ../../../ios/SuperCameraUI
 
 targets:
   SuperCameraDemo:
