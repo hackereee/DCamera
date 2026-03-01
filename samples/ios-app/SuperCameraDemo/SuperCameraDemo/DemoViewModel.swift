@@ -34,6 +34,8 @@ final class DefaultPermissionService: PermissionService {
 
 final class DemoViewModel: ObservableObject {
     @Published var permissionsGranted: Bool = false
+    @Published var cameraPermissionGranted: Bool = false
+    @Published var microphonePermissionGranted: Bool = false
     @Published var previewing: Bool = false
     @Published var recording: Bool = false
     @Published var lastMessage: String = ""
@@ -49,15 +51,17 @@ final class DemoViewModel: ObservableObject {
 
     func requestInitialPermissions() {
         permissionService.requestCameraPermission { [self] cameraGranted in
+            self.cameraPermissionGranted = cameraGranted
             self.permissionService.requestMicrophonePermission { micGranted in
-                self.permissionsGranted = cameraGranted && micGranted
+                self.microphonePermissionGranted = micGranted
+                self.permissionsGranted = cameraGranted
                 self.lastMessage = self.permissionsGranted ? "权限已授权" : "请在系统设置开启权限"
             }
         }
     }
 
     func startPreview() -> Bool {
-        guard permissionsGranted else {
+        guard cameraPermissionGranted else {
             lastMessage = "请在系统设置开启权限"
             return false
         }
@@ -76,7 +80,7 @@ final class DemoViewModel: ObservableObject {
     }
 
     func takePhoto(path: String) -> Bool {
-        guard permissionsGranted else {
+        guard cameraPermissionGranted else {
             lastMessage = "请在系统设置开启权限"
             return false
         }
@@ -87,8 +91,12 @@ final class DemoViewModel: ObservableObject {
     }
 
     func toggleRecord(path: String) -> Bool {
-        guard permissionsGranted else {
+        guard cameraPermissionGranted else {
             lastMessage = "请在系统设置开启权限"
+            return false
+        }
+        guard microphonePermissionGranted else {
+            lastMessage = "请在系统设置开启麦克风权限"
             return false
         }
         guard previewing else {

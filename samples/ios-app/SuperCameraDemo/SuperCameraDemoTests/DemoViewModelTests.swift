@@ -73,6 +73,21 @@ final class DemoViewModelTests: XCTestCase {
         XCTAssertEqual(vm.lastMessage, "请先启动预览")
     }
 
+    func test仅相机授权也可启动预览() {
+        let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: true, micGranted: false))
+        vm.requestInitialPermissions()
+        XCTAssertTrue(vm.startPreview())
+        XCTAssertEqual(vm.lastMessage, "预览已启动")
+    }
+
+    func test麦克风未授权时录制被阻止并提示() {
+        let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: true, micGranted: false))
+        vm.requestInitialPermissions()
+        XCTAssertTrue(vm.startPreview())
+        XCTAssertFalse(vm.toggleRecord(path: "/tmp/v.mp4"))
+        XCTAssertEqual(vm.lastMessage, "请在系统设置开启麦克风权限")
+    }
+
     func testViewModelPublishedPropertiesExist() {
         let vm = DemoViewModel(permissionService: FakePermissionService(cameraGranted: false, micGranted: false))
         // Verify all @Published properties are accessible
