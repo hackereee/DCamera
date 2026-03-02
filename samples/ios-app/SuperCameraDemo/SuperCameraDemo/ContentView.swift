@@ -8,9 +8,9 @@ struct ContentView: View {
             Text("SuperCamera Demo")
                 .font(.title)
 
-            CameraPreviewContainer { handle in
+            CameraPreviewContainer(onSurfaceReady: { handle in
                 vm.setPreviewSurfaceHandle(handle)
-            }
+            })
             .frame(height: 300)
 
             HStack(spacing: 16) {

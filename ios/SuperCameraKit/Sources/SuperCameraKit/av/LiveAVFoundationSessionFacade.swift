@@ -128,7 +128,7 @@ extension LiveAVFoundationSessionFacade: AVCaptureVideoDataOutputSampleBufferDel
         }
 
         let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-        let timestampNs = pts.timescale > 0 ? Int64(pts.value) * 1_000_000_000 / Int64(pts.timescale) : 0
+        let timestampNs = TimestampConversion.toNanoseconds(value: pts.value, timescale: pts.timescale)
         let frame = PreviewFrame(
             y: yData,
             u: uData,
